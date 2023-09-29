@@ -8,7 +8,7 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
-
+#Hibernate ddl auto (create, create-drop, validate, update, none)
 
 jwt:
   secret: K1LqzK6eeD0g0BfgOg7SKs2K1LqzK6eeD0g0BfgOg7SK1LqzK6eeD0g0BfgOg7S

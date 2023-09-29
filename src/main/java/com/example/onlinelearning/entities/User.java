@@ -1,49 +1,91 @@
 package com.example.onlinelearning.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 
-@Getter
-@Setter
+import javax.persistence.*;
+
+import lombok.*;
+import java.util.Date;
+import java.util.Set;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "user")
-public class User {
+@Entity
+@Table(name="user")
+public class User implements Serializable{
+
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-    private String name;
+    @Column(name = "fullname")
+    private String fullname;
 
-    // email không được trùng nhau
+    @Column(name = "email")
     private String email;
 
-    @JsonIgnore
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "avatar")
+    private String avatar;
+
+    @Column(name = "active")
+    private boolean active;
+
+    @Column(name = "password")
     private String password;
 
-    private String dienThoai;
+    // dung de mo ta nguoi dung khi ho tro thanh giang vien
+    @Column(name = "description", length = 10000 )
+    private String description;
 
-    private List<String> roles = new ArrayList<>();
+    //thong tin chuyen khoan khi tro thanh giang vien
+    @Column(name = "bank_name")
+    private String bank_name;
 
-    private boolean trangThai = true;
+    @Column(name = "account_number")
+    private String account_number;
 
-    @DBRef
-    private List<Vehicle> vehicle;
+    @Column(name = "account_name")
+    private String account_name;
 
-    public User(String name, String email, String password, String dienThoai, List<String> roles) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.dienThoai = dienThoai;
-        this.roles = roles;
-    }
+    @Column(name = "create_at")
+    private Date create_at= new Date(new java.util.Date().getTime());
+
+    @Column(name = "update_at")
+    private Date update_at= new Date(new java.util.Date().getTime());
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+    // moi nguoi dung co the giang day nhieu khoa hoc khac nhau
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private Set<Course> courses;
+
+    //review khoa hoc, moi nguoi chi review 1 khoa hoc/1 lan
+    @OneToOne(mappedBy = "user")
+    private Review review;
+
+    //review khoa hoc, moi nguoi chi danh gia sao 1 khoa hoc/1 lan
+    @OneToOne(mappedBy = "user")
+    private Rating rating;
+
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private Set<CourseRegister> registers;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private Set<Cart> carts;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private Set<Orders> orders;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private Set<Comment> comments;
+
 }
